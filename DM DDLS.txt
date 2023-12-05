@@ -1,0 +1,266 @@
+CREATE TABLE Staging_Denormalized_Data (
+    transaction_id INT PRIMARY KEY,
+    customer_id INT,
+    customer_name VARCHAR(255),
+    customer_address VARCHAR(255),
+    date_of_birth DATE,
+    email VARCHAR(255),
+    account_id INT,
+    account_type VARCHAR(255),
+    balance DECIMAL(18, 2),
+    open_date DATE,
+    transaction_date DATE,
+    location_id INT,
+    location_name VARCHAR(255),
+    city VARCHAR(255),
+    state VARCHAR(255),
+    amount DECIMAL(18, 2),
+    transaction_type VARCHAR(255),
+    branch_name VARCHAR(255),
+    day INT,
+    month INT,
+    year INT
+);
+
+
+
+-- Insert 10 sample records into the denormalized staging table
+INSERT INTO Staging_Denormalized_Data (
+    transaction_id,
+    customer_id,
+    customer_name,
+    customer_address,
+    date_of_birth,
+    email,
+    account_id,
+    account_type,
+    balance,
+    open_date,
+    transaction_date,
+    location_id,
+    location_name,
+    city,
+    state,
+    amount,
+    transaction_type,
+    branch_name,
+    day,
+    month,
+    year
+)
+VALUES
+    (1, 1001, 'John Smith', '123 Main St, Apt 4B', '1980-05-15', 'john.smith@email.com', 2001, 'Savings', 5000.00, '2022-01-15', '2022-01-01', 3001, 'New York', 'New York', 'NY', 500.00, 'Deposit', 'Main Branch', 1, 1, 2022),
+    (2, 1002, 'Jane Doe', '456 Elm St', '1990-03-20', 'jane.doe@email.com', 2002, 'Checking', 7500.00, '2022-01-15', '2022-01-02', 3002, 'Los Angeles', 'Los Angeles', 'CA', 300.00, 'Withdrawal', 'Downtown Branch', 2, 1, 2022),
+    (3, 1003, 'Alice Johnson', '789 Oak Dr', '1975-11-10', 'alice.johnson@email.com', 2003, 'Savings', 6000.00, '2022-01-15', '2022-01-03', 3003, 'Chicago', 'Chicago', 'IL', 1000.00, 'Transfer', 'Uptown Branch', 3, 1, 2022),
+    (4, 1004, 'David Brown', '567 Pine St, Apt 2C', '1987-09-25', 'david.brown@email.com', 2004, 'Savings', 4500.00, '2022-01-15', '2022-01-04', 3004, 'Miami', 'Miami', 'FL', 700.00, 'Withdrawal', 'Downtown Branch', 4, 1, 2022),
+    (5, 1005, 'Emma White', '890 Cedar Dr', '1995-04-14', 'emma.white@email.com', 2005, 'Checking', 8200.00, '2022-01-15', '2022-01-05', 3005, 'Houston', 'Houston', 'TX', 600.00, 'Deposit', 'Uptown Branch', 5, 1, 2022),
+    (6, 1006, 'Frank Johnson', '345 Oak St', '1982-06-30', 'frank.johnson@email.com', 2006, 'Savings', 5100.00, '2022-01-15', '2022-01-06', 3006, 'Denver', 'Denver', 'CO', 300.00, 'Withdrawal', 'Downtown Branch', 6, 1, 2022),
+    (7, 1007, 'Grace Davis', '987 Willow Dr', '1984-11-01', 'grace.davis@email.com', 2007, 'Checking', 6700.00, '2022-01-15', '2022-01-07', 3007, 'Seattle', 'Seattle', 'WA', 450.00, 'Deposit', 'Main Branch', 7, 1, 2022),
+    (8, 1008, 'Henry Wilson', '234 Elm St', '1993-02-18', 'henry.wilson@email.com', 2008, 'Savings', 5900.00, '2022-01-15', '2022-01-08', 3008, 'Boston', 'Boston', 'MA', 800.00, 'Transfer', 'Uptown Branch', 8, 1, 2022),
+    (9, 1009, 'Isabella Adams', '765 Pine St', '1978-08-10', 'isabella.adams@email.com', 2009, 'Checking', 7500.00, '2022-01-15', '2022-01-09', 3009, 'San Francisco', 'San Francisco', 'CA', 950.00, 'Withdrawal', 'Downtown Branch', 9, 1, 2022),
+    (10, 1010, 'James Brown', '890 Cedar Dr', '1986-03-25', 'james.brown@email.com', 2010, 'Savings', 4300.00, '2022-01-15', '2022-01-10', 3010, 'Phoenix', 'Phoenix', 'AZ', 600.00, 'Deposit', 'Main Branch', 10, 1, 2022);
+
+
+
+CREATE TABLE Customer_Dimension (
+    customer_key INT PRIMARY KEY,
+    customer_id INT,
+    customer_name VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    current_flag INT 
+);
+
+
+
+CREATE TABLE Account_Dimension (
+    account_key INT PRIMARY KEY,
+    account_id INT,
+    account_type VARCHAR(255),
+    balance DECIMAL(18, 2),
+    open_date DATE,
+    start_date DATE,
+    end_date DATE,
+    current_flag INT
+);
+
+
+
+CREATE TABLE Time_Dimension (
+    time_key INT PRIMARY KEY,
+    transaction_date DATE,
+    start_date DATE,
+    end_date DATE,
+    current_flag INT
+);
+
+
+
+CREATE TABLE Location_Dimension (
+    location_key INT PRIMARY KEY,
+    location_id INT,
+    location_name VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    current_flag INT
+);
+
+
+
+INSERT INTO Customer_Dimension (customer_key, customer_id, customer_name, start_date, end_date, current_flag)
+VALUES
+    (1, 1001, 'John Smith', '2022-01-01', '9999-12-31', 1),
+    (2, 1002, 'Jane Doe', '2022-01-01', '9999-12-31', 1),
+    (3, 1003, 'Alice Johnson', '2022-01-01', '9999-12-31', 1),
+    (4, 1004, 'Robert Lee', '2022-01-01', '9999-12-31', 1),
+    (5, 1005, 'Mary Brown', '2022-01-01', '9999-12-31', 1),
+    (6, 1006, 'William Clark', '2022-01-01', '9999-12-31', 1),
+    (50, 1050, 'David White', '2022-01-01', '9999-12-31', 1);
+
+
+
+INSERT INTO Account_Dimension (account_key, account_id, account_type, balance, open_date, start_date, end_date, current_flag)
+VALUES
+    (1, 2001,'Savings', 5000.00, '2022-01-15', '2022-01-01', '9999-12-31', 1),
+    (2, 2002,'Checking', 7500.00, '2022-01-15', '2022-01-01', '9999-12-31', 1),
+    (3, 2003,'Savings', 3000.00, '2022-02-10', '2022-01-01', '9999-12-31', 1),
+    (4, 2004,'Checking', 4500.00, '2022-02-10', '2022-01-01', '9999-12-31', 1),
+    (5, 2005,'Savings', 7000.00, '2022-03-20', '2022-01-01', '9999-12-31', 1),
+    (6, 2006,'Savings', 5500.00, '2022-03-20', '2022-01-01', '9999-12-31', 1),
+    (50, 2050,'Checking', 3800.00, '2022-04-05', '2022-01-01', '9999-12-31', 1);
+
+
+
+INSERT INTO Time_Dimension (time_key, transaction_date, start_date, end_date, current_flag)
+VALUES
+    (1, '2022-01-01', '2022-01-01', '9999-12-31', 1),
+    (2, '2022-01-02', '2022-01-01', '9999-12-31', 1),
+    (3, '2022-01-03', '2022-01-01', '9999-12-31', 1),
+    (4, '2022-01-04', '2022-01-01', '9999-12-31', 1),
+    (5, '2022-01-05', '2022-01-01', '9999-12-31', 1),
+    (6, '2022-01-06', '2022-01-01', '9999-12-31', 1),
+    (50, '2022-02-19', '2022-01-01', '9999-12-31', 1);
+
+
+INSERT INTO Location_Dimension (location_key, location_id, location_name, start_date, end_date, current_flag)
+VALUES
+    (1, 3001, 'New York', '2022-01-01', '9999-12-31', 1),
+    (2, 3002, 'Los Angeles', '2022-01-01', '9999-12-31', 1),
+    (3, 3003, 'Chicago', '2022-01-01', '9999-12-31', 1),
+    (4, 3004, 'Houston', '2022-01-01', '9999-12-31', 1),
+    (5, 3005, 'Miami', '2022-01-01', '9999-12-31', 1),
+    (6, 3006, 'San Francisco', '9999-01-01', '2022-12-31', 1),
+    (50, 3050, 'Dallas', '2022-01-01', '9999-12-31', 1);
+
+
+create TABLE Temp_Transformed_Data (
+    transaction_id INT,
+    customer_key INT,
+    account_key INT,
+    time_key INT,
+    location_key INT,
+    amount DECIMAL(18, 2),
+    transaction_type VARCHAR(255),
+    load_timestamp datetime DEFAULT CURRENT_TIMESTAMP
+);
+
+
+INSERT INTO Temp_Transformed_Data (
+    transaction_id,
+    customer_key,
+    account_key,
+    time_key,
+    location_key,
+    amount,
+    transaction_type
+	)
+SELECT
+    sd.transaction_id,
+    cd.customer_key,
+    ad.account_key,
+    td.time_key,
+    ld.location_key,
+    sd.amount,
+    sd.transaction_type
+FROM Staging_Denormalized_Data sd
+JOIN Customer_Dimension cd ON sd.customer_id = cd.customer_id
+JOIN Account_Dimension ad ON sd.account_id = ad.account_id
+JOIN Time_Dimension td ON sd.transaction_date = td.transaction_date
+JOIN Location_Dimension ld ON sd.location_id = ld.location_id;
+
+
+
+CREATE TABLE Transaction_Fact (
+    transaction_id INT PRIMARY KEY,
+    customer_key INT,
+    account_key INT,
+    time_key INT,
+    location_key INT, -- New location key
+    amount DECIMAL(18, 2),
+    transaction_type VARCHAR(255),
+    -- Other relevant KPIs
+    FOREIGN KEY (customer_key) REFERENCES Customer_Dimension(customer_key),
+    FOREIGN KEY (account_key) REFERENCES Account_Dimension(account_key),
+    FOREIGN KEY (time_key) REFERENCES Time_Dimension(time_key),
+    FOREIGN KEY (location_key) REFERENCES Location_Dimension(location_key) -- Location dimension reference
+);
+
+-- Insert the transformed data into the Transaction_Fact table
+CREATE TABLE ETL_Control (
+    last_updated_time TIMESTAMP
+);
+
+INSERT INTO ETL_Control (last_updated_time) VALUES ('2023-11-02 11:23:55');
+
+UPDATE ETL_Control
+SET last_updated_time = CURRENT_TIMESTAMP;
+
+
+-- Assuming Temp_Transformed_Data table already exists
+
+INSERT INTO Transaction_Fact (
+    transaction_id,
+    customer_key,
+    account_key,
+    time_key,
+    location_key,
+    amount,
+    transaction_type
+)
+SELECT
+ transaction_id,
+    customer_key,
+    account_key,
+    time_key,
+    location_key,
+    amount,
+    transaction_type
+FROM Temp_Transformed_Data
+WHERE load_timestamp > (SELECT last_updated_time FROM ETL_Control);
+
+
+Analysis
+===================
+
+Average Account Balance by Account Type:
+
+SELECT Account_Dimension.account_type, AVG(balance) AS average_balance
+FROM Account_Dimension
+JOIN Transaction_Fact ON Account_Dimension.account_key = Transaction_Fact.account_key
+GROUP BY Account_Dimension.account_type;
+
+Total Transactions by Location:
+
+SELECT Location_Dimension.location_name, COUNT(*) AS total_transactions
+FROM Location_Dimension
+JOIN Transaction_Fact ON Location_Dimension.location_key = Transaction_Fact.location_key
+GROUP BY Location_Dimension.location_name;
+
+
+Top Customers by Transaction Amount:
+
+SELECT Customer_Dimension.customer_name, SUM(amount) AS total_amount
+FROM Customer_Dimension
+JOIN Transaction_Fact ON Customer_Dimension.customer_key = Transaction_Fact.customer_key
+GROUP BY Customer_Dimension.customer_name
+ORDER BY total_amount DESC;
